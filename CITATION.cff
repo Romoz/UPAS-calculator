@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Mozgovyi"
+  given-names: "Roman"
+  orcid: "https://orcid.org/0000-0000-0000-0000" # Получите ORCID ID
+title: "TAI-ÉCOSAFE UPAS v1.1: Universal Plant Assessment System"
+version: 1.1
+doi: 10.5281/zenodo.16901687
+date-released: 2025-08-28
+url: "https://github.com/romanmozgovyi/TAI-ECOSAFE-UPAS"
+repository-code: "https://github.com/romanmozgovyi/TAI-ECOSAFE-UPAS"
+license: CC-BY-NC-4.0
+keywords:
+  - ecology
+  - plant assessment
+  - urban planning
+  - risk assessment
+  - ecosystem services
+  - invasive species
+  - toxicity
