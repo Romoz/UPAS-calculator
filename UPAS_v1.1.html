@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAI-ÉCOSAFE UPAS v1.1 Calculator</title>
+    <style>
+        /* Joomla 5 Compatible Styles */
+        .upas-calculator {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .upas-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .upas-header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .upas-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin: 5px 0;
+        }
+        
+        .upas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .upas-section {
+            background: #ffffff;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .upas-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .parameter-group {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .parameter-group h3 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .parameter-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 15px;
+        }
+        
+        .parameter-row label {
+            flex: 1;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+        
+        .parameter-row input {
+            width: 100px;
+            padding: 8px 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        
+        .parameter-row input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .modifier-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .modifier-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .modifier-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #3498db;
+        }
+        
+        .modifier-item label {
+            font-size: 0.85em;
+            color: #34495e;
+            cursor: pointer;
+        }
+        
+        .calculate-button {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .calculate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .result-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .result-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .classification-display {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.3);
+            margin: 20px 0;
+        }
+        
+        .indices-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .index-badge {
+            background: #34495e;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .info-tooltip {
+            position: relative;
+            cursor: help;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .info-tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            background: #2c3e50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .plant-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-line;
+        }
+        
+        .export-section {
+            text-align: center;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .export-button {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .export-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive Design for Joomla 5 */
+        @media (max-width: 768px) {
+            .upas-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modifier-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .parameter-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+            }
+            
+            .parameter-row input {
+                width: 100%;
+            }
+            
+            .upas-calculator {
+                padding: 10px;
+            }
+        }
+        
+        /* Joomla 5 Module Compatibility */
+        .moduletable .upas-calculator {
+            margin: 0;
+            padding: 15px;
+        }
+        
+        .item-page .upas-calculator {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="upas-calculator">
+        <div class="upas-header">
+            <h1>TAI-ÉCOSAFE UPAS v1.0</h1>
+            <p>Universal Plant Assessment System</p>
+            <p style="font-size: 0.9em;">Comprehensive Plant Assessment Methodology</p>
+        </div>
+        
+        <div class="upas-grid">
+            <div class="upas-section">
+                <h2>📊 Assessment Parameters</h2>
+                
+                <div class="parameter-group">
+                    <h3>🚨 Risk Parameters (TAI)</h3>
+                    
+                    <div class="parameter-row">
+                        <label>T - Human Toxicity <span class="info-tooltip" data-tooltip="0.0: Absolutely safe | 5.0: Critical toxicity">ⓘ</span></label>
+                        <input type="number" id="toxicity" min="0" max="5" step="0.1" value="0">
+                    </div>
+                    
+                    <div class="parameter-row">
+                        <label>A - Animal Danger <span class="info-tooltip" data-tooltip="0.0: Completely harmless | 5.0: Critical toxicity">ⓘ</span></label>
+                        <input type="number" id="animal_danger" min="0" max="5" step="0.1" value="0">
+                    </div>
+                    
+                    <div class="parameter-row">
+                        <label>I - Invasiveness <span class="info-tooltip" data-tooltip="0.0: Does not spread | 5.0: Critical invasiveness">ⓘ</span></label>
+                        <input type="number" id="invasiveness" min="0" max="5" step="0.1" value="0">
+                    </div>
+                </div>
+                
+                <div class="parameter-group">
+                    <h3>🌿 Value Parameters (EVI)</h3>
+                    
+                    <div class="parameter-row">
+                        <label>C - CO₂ Absorption <span class="info-tooltip" data-tooltip="kg CO₂ m⁻² canopy yr⁻¹: 0.0-5.0">ⓘ</span></label>
+                        <input type="number" id="co2_absorption" min="0" max="5" step="0.1" value="0">
+                    </div>
+                    
+                    <div class="parameter-row">
+                        <label>E - Ecosystem Services <span class="info-tooltip" data-tooltip="0.0: Minimal role | 5.0: Critical role">ⓘ</span></label>
+                        <input type="number" id="ecosystem_services" min="0" max="5" step="0.1" value="0">
+                    </div>
+                    
+                    <div class="parameter-row">
+                        <label>S - Social Value <span class="info-tooltip" data-tooltip="0.0: Insignificant | 5.0: National symbol">ⓘ</span></label>
+                        <input type="number" id="social_value" min="0" max="5" step="0.1" value="0">
+                    </div>
+                </div>
+                
+                <div class="parameter-group">
+                    <h3>🇱🇺 Luxembourg Modifiers</h3>
+                    <div class="modifier-grid">
+                        <div class="modifier-item">
+                            <input type="checkbox" id="mod_slc">
+                            <label for="mod_slc">M1 (SLC) +0.2</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="mod_frz">
+                            <label for="mod_frz">M2 (FRZ) +0.25</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="mod_bdl">
+                            <label for="mod_bdl">M3 (BDL) +0.3</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="mod_rds">
+                            <label for="mod_rds">M4 (RDS) +0.15</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="mod_rsp">
+                            <label for="mod_rsp">M5 (RSP) -0.3</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="parameter-group">
+                    <h3>📋 Specialized Indices</h3>
+                    <div class="modifier-grid">
+                        <div class="modifier-item">
+                            <input type="checkbox" id="idx_fxt">
+                            <label for="idx_fxt">FXT - Fast Toxicity</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="idx_chd">
+                            <label for="idx_chd">CHD - Child Danger</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="idx_vet">
+                            <label for="idx_vet">VET - Veterinary Emergency</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="idx_cln">
+                            <label for="idx_cln">CLN - Clinically Documented</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="idx_all">
+                            <label for="idx_all">ALL - Allergenic</label>
+                        </div>
+                        <div class="modifier-item">
+                            <input type="checkbox" id="idx_ban">
+                            <label for="idx_ban">BAN - EU Banned</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="parameter-group">
+                    <h3>💰 Economic Parameters</h3>
+                    <div class="parameter-row">
+                        <label>ROI Multiplier <span class="info-tooltip" data-tooltip="Return on investment: 0-15x">ⓘ</span></label>
+                        <input type="number" id="roi_mult" min="0" max="15" step="0.1" value="3.1">
+                    </div>
+                </div>
+                
+                <button class="calculate-button" onclick="calculateUPAS()">🧮 Calculate UPAS</button>
+            </div>
+            
+            <div class="upas-section">
+                <h2>📈 Results</h2>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" style="color: #e74c3c;" id="tai_result">0.00</div>
+                        <div class="result-label">TAI</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-value" style="color: #27ae60;" id="evi_result">0.00</div>
+                        <div class="result-label">EVI</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-value" style="color: #8e44ad;" id="upas_result">0.00</div>
+                        <div class="result-label">UPAS</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-value" style="color: #f39c12;" id="escore_result">0.00</div>
+                        <div class="result-label">E_Score</div>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div style="font-weight: bold; margin-bottom: 10px;">Safety Factors:</div>
+                    <div id="safety_factors">Ft: 1.0 | Fs: 1</div>
+                </div>
+                
+                <div class="result-card" style="background: #e8f4f8; border-color: #17a2b8;">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: #17a2b8;">Classification Logic:</div>
+                    <div id="classification_logic" style="font-size: 0.85em; color: #0c5460;">
+                        <!-- Classification logic will be displayed here -->
+                    </div>
+                </div>
+                
+                <div id="classification_result" class="classification-display" style="background: #95a5a6;">
+                    Enter parameters for classification
+                </div>
+                
+                <div id="indices_display" class="indices-display">
+                    <!-- Active indices will be displayed here -->
+                </div>
+                
+                <div id="plant_card" class="plant-card" style="display: none;">
+                    <!-- Plant card will be generated here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="export-section">
+            <h3>📊 Export Options</h3>
+            <button class="export-button" onclick="exportCSV()">💾 Export CSV</button>
+            <button class="export-button" onclick="generatePlantCard()">🃏 Generate Card</button>
+            <button class="export-button" onclick="copyResults()">📋 Copy Results</button>
+        </div>
+    </div>
+
+    <script>
+        let currentResults = {};
+        
+        function calculateUPAS() {
+            // Get input values
+            const T = parseFloat(document.getElementById('toxicity').value) || 0;
+            const A = parseFloat(document.getElementById('animal_danger').value) || 0;
+            const I = parseFloat(document.getElementById('invasiveness').value) || 0;
+            const C = parseFloat(document.getElementById('co2_absorption').value) || 0;
+            const E = parseFloat(document.getElementById('ecosystem_services').value) || 0;
+            const S = parseFloat(document.getElementById('social_value').value) || 0;
+            const ROI_mult = parseFloat(document.getElementById('roi_mult').value) || 1;
+            
+            // Luxembourg modifiers
+            let modifiers = 0;
+            if (document.getElementById('mod_slc').checked) modifiers += 0.2;
+            if (document.getElementById('mod_frz').checked) modifiers += 0.25;
+            if (document.getElementById('mod_bdl').checked) modifiers += 0.3;
+            if (document.getElementById('mod_rds').checked) modifiers += 0.15;
+            if (document.getElementById('mod_rsp').checked) modifiers -= 0.3;
+            
+            // Specialized indices
+            const indices = {
+                FXT: document.getElementById('idx_fxt').checked,
+                CHD: document.getElementById('idx_chd').checked,
+                VET: document.getElementById('idx_vet').checked,
+                CLN: document.getElementById('idx_cln').checked,
+                ALL: document.getElementById('idx_all').checked,
+                BAN: document.getElementById('idx_ban').checked
+            };
+            
+            // Calculate TAI
+            const TAI = (T * 1.0) + (A * 1.3) + (I * 1.4) + modifiers;
+            
+            // Calculate EVI
+            const EVI = (C * 1.2) + (E * 1.0) + (S * 0.8);
+            
+            // Safety factors
+            let Ft = 1.0;
+            if (T === 2) Ft = 0.5;
+            if (T >= 3) Ft = 0.0;
+            
+            let Fs = 1;
+            if (I >= 3 || indices.BAN || indices.FXT) Fs = 0;
+            
+            // Calculate UPAS
+            const UPAS = TAI - (EVI * Ft * Fs);
+            
+            // Calculate E_Score
+            let E_Score = 0;
+            let Safety_Factor = (TAI < 7) ? 1 : -1;
+            
+            if (ROI_mult > 0) {
+                E_Score = UPAS * Math.log(ROI_mult + 1) * Safety_Factor;
+            } else if (ROI_mult <= 0 && TAI >= 7) {
+                E_Score = 10 * TAI;
+            }
+            
+            // Determine classification
+            const category = determineCategory(T, TAI, I, UPAS, indices);
+            
+            // Store results
+            currentResults = {
+                T, A, I, C, E, S, TAI, EVI, UPAS, E_Score, Ft, Fs, ROI_mult,
+                category, indices, modifiers
+            };
+            
+            // Display results
+            displayResults();
+        }
+        
+        function determineCategory(T, TAI, I, UPAS, indices) {
+            // Priority 1: Vital danger (RED) - T=5 OR deaths OR (TAI>10 AND T≥4)
+            if (T === 5 || (TAI > 10 && T >= 4)) {
+                return { name: 'RED', color: '#DC143C', emoji: '🔴', action: 'Immediate removal' };
+            }
+            
+            // Priority 2: Serious danger (ORANGE) - 7≤TAI≤10 AND T≥3 AND NOT p.1
+            if (TAI >= 7 && TAI <= 10 && T >= 3) {
+                return { name: 'ORANGE', color: '#FF8C00', emoji: '🟠', action: 'Strict control' };
+            }
+            
+            // Priority 3: Invasive threat (BROWN) - I≥3 AND NOT p.1-2
+            if (I >= 3 && !(T === 5 || (TAI > 10 && T >= 4)) && !(TAI >= 7 && TAI <= 10 && T >= 3)) {
+                return { name: 'BROWN', color: '#8B4513', emoji: '🟤', action: 'Ecological control' };
+            }
+            
+            // Priority 4: Major allergen (VIOLET) - ALL index = true
+            if (indices.ALL) {
+                return { name: 'VIOLET', color: '#8A2BE2', emoji: '🟣', action: 'Medical measures' };
+            }
+            
+            // Priority 5: Moderate danger (YELLOW) - 4≤TAI≤6.9 AND NOT p.1-4
+            if (TAI >= 4 && TAI <= 6.9 && 
+                !(T === 5 || (TAI > 10 && T >= 4)) && 
+                !(TAI >= 7 && TAI <= 10 && T >= 3) && 
+                !(I >= 3) && 
+                !indices.ALL) {
+                return { name: 'YELLOW', color: '#FFD700', emoji: '🟡', action: 'Limited application' };
+            }
+            
+            // Priority 6: Weak danger (BEIGE) - 2≤TAI≤3.9 AND NOT p.1-5
+            if (TAI >= 2 && TAI <= 3.9 && 
+                !(T === 5 || (TAI > 10 && T >= 4)) && 
+                !(TAI >= 7 && TAI <= 10 && T >= 3) && 
+                !(I >= 3) && 
+                !indices.ALL && 
+                !(TAI >= 4 && TAI <= 6.9)) {
+                return { name: 'BEIGE', color: '#F5F5DC', emoji: '🟤', action: 'Standard application' };
+            }
+            
+            // Priority 7: Climate champion (GREEN) - TAI<2 AND UPAS≤-6 (HIGHEST priority)
+            if (TAI < 2 && UPAS <= -6) {
+                return { name: 'GREEN', color: '#228B22', emoji: '🟢', action: 'Maximum priority' };
+            }
+            
+            // Priority 8: Ecosystem leader (OLIVE) - TAI<2 AND UPAS≤-3 (MEDIUM priority)
+            if (TAI < 2 && UPAS <= -3) {
+                return { name: 'OLIVE', color: '#808000', emoji: '🫒', action: 'Planting priority' };
+            }
+            
+            // Priority 9: Ecologically beneficial (BLUE) - TAI<2 AND UPAS≤-1 (LOWEST priority)
+            if (TAI < 2 && UPAS <= -1) {
+                return { name: 'BLUE', color: '#1E90FF', emoji: '🔵', action: 'Recommended' };
+            }
+            
+            // Default: Gray
+            return { name: 'GRAY', color: '#95a5a6', emoji: '⚪', action: 'Requires clarification' };
+        }
+        
+        function displayResults() {
+            const results = currentResults;
+            
+            // Update numerical results
+            document.getElementById('tai_result').textContent = results.TAI.toFixed(2);
+            document.getElementById('evi_result').textContent = results.EVI.toFixed(2);
+            document.getElementById('upas_result').textContent = results.UPAS.toFixed(2);
+            document.getElementById('escore_result').textContent = results.E_Score.toFixed(2);
+            document.getElementById('safety_factors').textContent = `Ft: ${results.Ft} | Fs: ${results.Fs}`;
+            
+            // Update classification
+            const classificationDiv = document.getElementById('classification_result');
+            classificationDiv.style.background = results.category.color;
+            classificationDiv.innerHTML = `
+                ${results.category.emoji} ${results.category.name}<br>
+                <div style="font-size: 0.8em; margin-top: 10px;">${results.category.action}</div>
+            `;
+            
+            // Update classification logic explanation
+            const logicDiv = document.getElementById('classification_logic');
+            logicDiv.innerHTML = getClassificationExplanation(results);
+            
+            // Display active indices
+            const indicesDiv = document.getElementById('indices_display');
+            indicesDiv.innerHTML = '';
+            
+            Object.keys(results.indices).forEach(index => {
+                if (results.indices[index]) {
+                    const badge = document.createElement('div');
+                    badge.className = 'index-badge';
+                    badge.textContent = index;
+                    indicesDiv.appendChild(badge);
+                }
+            });
+        }
+        
+        function getClassificationExplanation(results) {
+            const { T, TAI, I, UPAS, indices, category } = results;
+            
+            let explanation = `<strong>Applied Rule:</strong><br>`;
+            
+            if (category.name === 'RED') {
+                if (T === 5) {
+                    explanation += `T = 5 (Critical toxicity) → RED`;
+                } else {
+                    explanation += `TAI > 10 (${TAI.toFixed(2)}) AND T ≥ 4 (${T}) → RED`;
+                }
+            } else if (category.name === 'ORANGE') {
+                explanation += `7 ≤ TAI ≤ 10 (${TAI.toFixed(2)}) AND T ≥ 3 (${T}) → ORANGE`;
+            } else if (category.name === 'BROWN') {
+                explanation += `I ≥ 3 (${I}) AND not RED/ORANGE → BROWN (Invasive threat)`;
+            } else if (category.name === 'VIOLET') {
+                explanation += `ALL index = true → VIOLET (Major allergen)`;
+            } else if (category.name === 'YELLOW') {
+                explanation += `4 ≤ TAI ≤ 6.9 (${TAI.toFixed(2)}) AND not higher priority → YELLOW`;
+            } else if (category.name === 'BEIGE') {
+                explanation += `2 ≤ TAI ≤ 3.9 (${TAI.toFixed(2)}) AND not higher priority → BEIGE`;
+            } else if (category.name === 'GREEN') {
+                explanation += `TAI < 2 (${TAI.toFixed(2)}) AND UPAS ≤ -6 (${UPAS.toFixed(2)}) → GREEN (Climate Champion)`;
+            } else if (category.name === 'OLIVE') {
+                explanation += `TAI < 2 (${TAI.toFixed(2)}) AND UPAS ≤ -3 (${UPAS.toFixed(2)}) → OLIVE (Ecosystem Leader)`;
+            } else if (category.name === 'BLUE') {
+                explanation += `TAI < 2 (${TAI.toFixed(2)}) AND UPAS ≤ -1 (${UPAS.toFixed(2)}) → BLUE (Ecologically Beneficial)`;
+            } else {
+                explanation += `No specific criteria met → GRAY (Requires clarification)`;
+            }
+            
+            explanation += `<br><br><strong>Check List:</strong><br>`;
+            explanation += `• T = ${T} ${T === 5 ? '✓ Critical' : T >= 4 ? '⚠ High' : T >= 3 ? '⚠ Significant' : '✓ Safe'}<br>`;
+            explanation += `• I = ${I} ${I >= 3 ? '⚠ Invasive' : '✓ Low spread'}<br>`;
+            explanation += `• TAI = ${TAI.toFixed(2)} ${TAI > 10 ? '🔴 Critical' : TAI >= 7 ? '🟠 High' : TAI >= 4 ? '🟡 Moderate' : TAI >= 2 ? '🟤 Low' : '🟢 Minimal'}<br>`;
+            explanation += `• UPAS = ${UPAS.toFixed(2)} ${UPAS <= -6 ? '🟢 Excellent (Climate Champion)' : UPAS <= -3 ? '🫒 Very Good (Ecosystem Leader)' : UPAS <= -1 ? '🔵 Good (Beneficial)' : UPAS >= 0 ? '⚠ Limited/No benefit' : '❓ Neutral'}<br>`;
+            if (indices.ALL) explanation += `• ALL = true ⚠ Major allergen<br>`;
+            
+            return explanation;
+        }
+        
+        function exportCSV() {
+            if (!currentResults.TAI) {
+                alert('Please calculate UPAS first!');
+                return;
+            }
+            
+            const results = currentResults;
+            const activeIndices = Object.keys(results.indices)
+                .filter(key => results.indices[key])
+                .join(', ');
+            
+            const csvContent = `Parameter,Value
+TAI,${results.TAI.toFixed(2)}
+EVI,${results.EVI.toFixed(2)}
+UPAS,${results.UPAS.toFixed(2)}
+E_Score,${results.E_Score.toFixed(2)}
+Category,${results.category.name}
+Action,${results.category.action}
+Active_Indices,${activeIndices}
+Date,${new Date().toISOString().slice(0,10)}`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `UPAS_result_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function generatePlantCard() {
+            if (!currentResults.TAI) {
+                alert('Please calculate UPAS first!');
+                return;
+            }
+            
+            const results = currentResults;
+            const activeIndices = Object.keys(results.indices)
+                .filter(key => results.indices[key])
+                .join(' | ');
+            
+            const plantName = prompt('Enter plant name:', 'Plant Name');
+            if (!plantName) return;
+            
+            const cardContent = `${results.category.emoji} ${plantName.toUpperCase()} | TAI: ${results.TAI.toFixed(1)} | EVI: ${results.EVI.toFixed(1)} | UPAS: ${results.UPAS.toFixed(1)} | E_Score: ${results.E_Score.toFixed(1)} | ROI: ${results.ROI_mult}x | ${activeIndices || 'None'} | ${new Date().toLocaleDateString()} |
+
+Fs / Ft: [Fs=${results.Fs} ; Ft=${results.Ft}]
+Category: ${results.category.name} - ${results.category.action}
+Economic: ${results.E_Score < 0 ? 'BENEFIT/PROFIT' : results.E_Score > 0 ? 'COSTS/LOSSES' : 'NEUTRAL'}
+
+TAI-ÉCOSAFE UPAS v1.1 | © 2025 MOZGOVYI Roman | CC BY-NC-4.0`;
+            
+            const cardDiv = document.getElementById('plant_card');
+            cardDiv.textContent = cardContent;
+            cardDiv.style.display = 'block';
+        }
+        
+        function copyResults() {
+            if (!currentResults.TAI) {
+                alert('Please calculate UPAS first!');
+                return;
+            }
+            
+            const results = currentResults;
+            const text = `TAI-ÉCOSAFE UPAS v1.1 Results:
+TAI: ${results.TAI.toFixed(2)}
+EVI: ${results.EVI.toFixed(2)}
+UPAS: ${results.UPAS.toFixed(2)}
+E_Score: ${results.E_Score.toFixed(2)}
+Classification: ${results.category.emoji} ${results.category.name}
+Action: ${results.category.action}`;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Results copied to clipboard!');
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+        
+        // Auto-calculate on input change
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('change', calculateUPAS);
+                input.addEventListener('input', function() {
+                    if (this.type === 'number') {
+                        const value = parseFloat(this.value);
+                        if (this.id === 'roi_mult') {
+                            if (value < 0) this.value = 0;
+                            if (value > 15) this.value = 15;
+                        } else {
+                            if (value < 0) this.value = 0;
+                            if (value > 5) this.value = 5;
+                        }
+                    }
+                });
+            });
+            
+            // Initial calculation
+            calculateUPAS();
+        });
+    </script>
+</body>
+</html>
